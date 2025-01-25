@@ -6,20 +6,23 @@ class UserService {
       const existingUser = await User.findOne({ username: username });
       return {
         success: true,
-        exists: !!existingUser, // true if user exists, false otherwise
+        exists: existingUser !== null,
+        message: "User exists", // true if user exists, false otherwise
       };
     } catch (err) {
       // Handle database-specific errors
       if (err.name === 'MongoServerError') {
         return {
           success: false,
+          exists: false,
           message: 'Database server error. Please try again later.',
         };
       }
       // Handle other errors
       return {
         success: false,
-        message: err.message || 'An unexpected error occurred.',
+        exists: false,
+        message: 'An unexpected error occurred.',
       };
     }
   }
@@ -29,7 +32,6 @@ class UserService {
     try {
       // Check if the username already exists
       const {exists, success} = await UserService.checkUsernameExists(username);
-      console.log(exists)
       if (!success) {
         throw new Error('Failed to check username existence.');
       }
@@ -46,13 +48,13 @@ class UserService {
 
       return {
         success: true,
-        user: newUser,
+        message: "Registration Successful",
       };
     } catch (err) {
       console.error('Error registering user:', err);
       return {
         success: false,
-        message: err.message || 'Error registering user.',
+        message: 'Error registering user.',
       };
     }
   }

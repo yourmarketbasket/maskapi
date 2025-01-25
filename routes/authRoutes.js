@@ -10,8 +10,8 @@ module.exports = (io)=>{
         res.send('Login route');
     });
 
-    router.post('/registerUserRoute', (req, res) => {
-        res.send(userServices.registerUser(req.body.username));
+    router.post('/registerUserRoute', async(req, res) => {
+        res.send(await userServices.registerUser(req.body.username));
     });
 
     
