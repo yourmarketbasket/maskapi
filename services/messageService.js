@@ -14,7 +14,7 @@ class MessageService{
         }
     }
 
-    // get all messages between sender and receiver
+    // Get all messages between sender and receiver, sorted by timestamp (oldest first)
     static async getAllMessagesFromContact(sender, receiver) {
         try {
             const messages = await Message.find({
@@ -22,13 +22,16 @@ class MessageService{
                     { sender, receiver },
                     { sender: receiver, receiver: sender }
                 ]
-            });
+            })
+            .sort({ timestamp: 1 }); // 1 for ascending order (oldest first)
+
             return { success: true, messages };
         } catch (error) {
             console.error('Error getting messages:', error);
             return { success: false, message: 'Error getting messages' };
         }
     }
+
 
 
 }
