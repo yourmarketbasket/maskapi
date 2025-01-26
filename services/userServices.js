@@ -58,6 +58,39 @@ class UserService {
       };
     }
   }
+//   get all users
+  static async getAllUsers() {
+    try {
+      const users = await User.find();
+      return {
+        success: true,
+        users,
+      };
+    } catch (err) {
+      console.error('Error getting users:', err);
+      return {
+        success: false,
+        message: 'Error getting users.',
+      };
+    }
+  }
+//   get my contacts
+  static async getMyContacts(username) {
+    // console.log(username)
+    try {
+      const user = await User.findOne({ username });
+      return {
+        success: true,
+        contacts: user.contacts,
+      };
+    } catch (err) {
+      console.error('Error getting my contacts:', err);
+      return {
+        success: false,
+        message: 'Error getting my contacts.',
+      };
+    }
+  }
 }
 
 module.exports = UserService; // Export the class, not an instance

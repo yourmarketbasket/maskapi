@@ -8,7 +8,7 @@ const { checkDBConnection, closeDBConnection } = require('./middleware/db');
 
 const { Server } = require("socket.io");
 const app = express();
-const PORT = 5500;
+const PORT = 3000;
 
 app.use(express.json());
 // Create server with socket.io
@@ -18,11 +18,14 @@ const io = new Server(server);
 // Import routes
 const authRoutes = require('./routes/authRoutes')(io);
 const userRoutes = require('./routes/userRoutes')(io);
+const messageRoutes = require('./routes/messageRoutes')(io);
 
 
 // Use routes
 app.use('/authRoutes', authRoutes);
 app.use('/userRoutes', userRoutes);
+app.use('/messageRoutes', messageRoutes);
+
 
 
 // Home route

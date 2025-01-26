@@ -6,6 +6,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  contacts: {
+    type: [String],
+    default: []
+  },
+  hidden: {
+    type: Boolean,
+    default: false
   }
 });
 
