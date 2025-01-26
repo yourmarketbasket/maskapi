@@ -52,5 +52,20 @@ module.exports = (io) => {
     }
   });
 
+//   add contact route
+  router.post('/addContactRoute', async (req, res) => {
+    try {
+      const result = await UserServices.addContact(req.body.username, req.body.contact, io);
+      if (result.success) {
+        res.status(200).send(result);
+      } else {
+        res.status(400).send(result); // Use 400 for client-side issues like invalid requests
+      }
+    } catch (error) {
+      console.error('Error in /addContact route:', error);
+      res.status(500).send({ success: false, message: 'Internal Server Error' });
+    }
+  });
+
   return router;
 };

@@ -26,6 +26,39 @@ class UserService {
       };
     }
   }
+//   add contact
+  static async addContact(username, contact, io) {
+    try {
+      const user = await User.findOne({ username });
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found.',
+        };
+      }
+    //   check if contact exists in the contact array
+      if (user.contacts.includes(contact)) {
+        return {
+          success: false,
+          message: 'Contact already exists.',
+        };
+      }
+
+      user.contacts.push(contact);
+      await user.save();
+      io.emit('contact-added', { username, contact });
+      return {
+        success: true,
+        message: 'Contact added successfully.',
+      };
+    } catch (err) {
+      console.error('Error adding contact:', err);
+      return {
+        success: false,
+        message: 'Error adding contact.',
+      };
+    }
+  }
 
   // Register a new user
   static async registerUser(username) {
