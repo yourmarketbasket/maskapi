@@ -1,44 +1,60 @@
-// main server file (index.js or app.js)
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const http = require('http');
 const { checkDBConnection, closeDBConnection } = require('./middleware/db');
-
-const { Server } = require("socket.io");
+const { Server } = require('socket.io');
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+
 // Create server with socket.io
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*", // Adjust this for specific client URLs
+        methods: ["GET", "POST"],
+    },
+});
 
-// Import routes
+// Middleware to attach `io` to `req`
+app.use((req, res, next) => {
+    req.io = io; // Attach `io` to `req` for use in routes
+    next();
+});
+
+// Import routes and pass `io` directly
 const authRoutes = require('./routes/authRoutes')(io);
 const userRoutes = require('./routes/userRoutes')(io);
 const messageRoutes = require('./routes/messageRoutes')(io);
-
 
 // Use routes
 app.use('/authRoutes', authRoutes);
 app.use('/userRoutes', userRoutes);
 app.use('/messageRoutes', messageRoutes);
 
-
-
 // Home route
 app.get('/', (req, res) => {
     res.send('Hello World!');
-    // Ensure DB connection is checked here
-    checkDBConnection();
+    checkDBConnection(); // Ensure DB connection is checked here
 });
 
+// Handle WebSocket connections
+io.on('connection', (socket) => {
+    console.log(`A user connected: ${socket.id}`);
 
+    // Handle custom events
+    socket.on('message', (data) => {
+        console.log(`Message received: ${data}`);
+        io.emit('message', data); // Broadcast message to all connected clients
+    });
 
-
-
+    // Handle disconnection
+    socket.on('disconnect', () => {
+        console.log(`A user disconnected: ${socket.id}`);
+    });
+});
 
 // Start server
 server.listen(PORT, async () => {
@@ -51,3 +67,9 @@ server.listen(PORT, async () => {
     }
 });
 
+// Ensure server shutdown gracefully closes DB connections
+process.on('SIGINT', async () => {
+    console.log('Shutting down gracefully...');
+    await closeDBConnection();
+    process.exit(0);
+});
