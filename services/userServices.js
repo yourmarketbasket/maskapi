@@ -59,6 +59,7 @@ class UserService {
       };
     }
   }
+//   
 
   // Register a new user
   static async registerUser(username) {

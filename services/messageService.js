@@ -31,6 +31,43 @@ class MessageService{
             return { success: false, message: 'Error getting messages' };
         }
     }
+    // get all usernames where username is either sender or receiver, should pass username, method is getChatMates
+    static async getChatMates(username) {
+        try {
+            // search in messages where the username is either sender or receiver
+            const messages = await Message.find({
+                $or: [
+                    { sender: username },
+                    { receiver: username }
+                ]
+            }).sort({ timestamp: -1 }); // Sort messages by timestamp to get the most recent ones first
+            
+            const chatMates = new Map(); // Use Map to track the last message for each chat mate
+    
+            messages.forEach(message => {
+                const chatMate = message.sender === username ? message.receiver : message.sender;
+                // If chat mate already exists, don't overwrite the last message
+                if (!chatMates.has(chatMate)) {
+                    chatMates.set(chatMate, message);
+                }
+            });
+    
+            // Prepare result
+            const result = Array.from(chatMates, ([chatMate, lastMessage]) => ({
+                chatMate,
+                lastMessage
+            }));
+    
+            return { success: true, chatMates: result };
+        } catch (error) {
+            console.error('Error getting chat mates:', error);
+            return { success: false, message: 'Error getting chat mates' };
+        }
+    }
+    
+            
+    
+
 
 
 

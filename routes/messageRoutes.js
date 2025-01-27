@@ -13,6 +13,10 @@ module.exports = (io)=>{
     router.post('/getAllMessagesFromContactRoute', async(req, res) => {
         res.send(await MessageService.getAllMessagesFromContact(req.body.sender, req.body.receiver));
     });
+    // get chatmates
+    router.post('/getChatMatesRoute', async(req, res) => {
+        res.send(await MessageService.getChatMates(req.body.username));
+    });
     
 
     
