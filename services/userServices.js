@@ -77,11 +77,13 @@ class UserService {
       }
 
       // Create and save the new user
-      const newUser = new User({ username });
+      const password = UserService.generatePassword();
+      const newUser = new User({ username: username, password: password });
       await newUser.save();
 
       return {
         success: true,
+        password: password,
         message: "Registration Successful",
       };
     } catch (err) {
@@ -125,6 +127,25 @@ class UserService {
       };
     }
   }
+  // generate password
+  static generatePassword() {
+    const length = 36;
+    const blockSize = 4;
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
+    let password = '';
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        password += chars.charAt(randomIndex);
+
+        // Add a hyphen after every 4 characters, except at the end
+        if ((i + 1) % blockSize === 0 && i !== length - 1) {
+            password += '-';
+        }
+    }
+
+    return password;
+}
 }
 
 module.exports = UserService; // Export the class, not an instance
