@@ -131,7 +131,7 @@ class UserService {
   static generatePassword() {
     const length = 36;
     const blockSize = 4;
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
     let password = '';
 
     for (let i = 0; i < length; i++) {
@@ -144,7 +144,7 @@ class UserService {
         }
     }
 
-    return password;
+    return password.toUpperCase();
 }
 }
 
