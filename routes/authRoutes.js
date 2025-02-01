@@ -11,9 +11,20 @@ module.exports = (io)=>{
         res.send(await AuthService.loginUser(req.body.username));
     });
 
-    router.post('/registerUserRoute', async(req, res) => {
-        res.send(await userServices.registerUser(req.body.username));
+
+    router.post('/generateRegistrationChallengeRoute', async (req, res) => {
+        try {
+              
+
+            const options = await userServices.generateRegistrationChallenge(req.body);
+            res.json({ success: true, data: options });
+
+        } catch (error) {
+            res.status(500).json({ success: false, error: error.message });
+        }
     });
+
+
 
     
 

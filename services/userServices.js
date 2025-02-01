@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const crypto = require('crypto');
 class UserService {
   // Check if the username already exists in the database
   static async checkUsernameExists(username) {
@@ -129,23 +130,86 @@ class UserService {
   }
   // generate password
   static generatePassword() {
-    const length = 36;
-    const blockSize = 4;
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
-    let password = '';
+        const length = 36;
+        const blockSize = 4;
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
+        let password = '';
 
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * chars.length);
-        password += chars.charAt(randomIndex);
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * chars.length);
+            password += chars.charAt(randomIndex);
 
-        // Add a hyphen after every 4 characters, except at the end
-        if ((i + 1) % blockSize === 0 && i !== length - 1) {
-            password += '-';
+            // Add a hyphen after every 4 characters, except at the end
+            if ((i + 1) % blockSize === 0 && i !== length - 1) {
+                password += '-';
+            }
         }
-    }
 
-    return password.toUpperCase();
-}
+        return password.toUpperCase();
+    }
+    static async generateRegistrationChallenge(data) {
+      let user = await User.findOne({ username: data.username });
+  
+      if (!user) {
+          user = new User({
+              username: data.username,
+              credentials: [],
+              backupCodes: [],
+              activeDevice: {
+                  model: data.device.model,
+                  brand: data.device.brand || null, // Android only
+                  manufacturer: data.device.manufacturer || null, // Android only
+                  systemName: data.device.systemName,
+                  systemVersion: data.device.systemVersion,
+                  identifierForVendor: data.device.identifierForVendor || data.device.serialNo || null, // iOS & Android
+                  serialNo: data.device.serialNo || null, // Android only
+                  isPhysicalDevice: data.device.isPhysicalDevice,
+                  display: data.device.display || null, // Android only
+                  device: data.device.device || null, // Android only
+                  name: data.device.name || null, // iOS only
+                  utsnameMachine: data.device.utsnameMachine || null,// iOS only
+                  operatingSystem: data.devive.OS
+              },
+              contacts: [],
+              hidden: false
+          });
+          await user.save();
+      }
+  
+      const challenge = UserService.generateChallenge();
+      const userId = Buffer.from(user.username).toString('base64');
+  
+      return {
+          authenticatorExtensions: "",
+          clientDataHash: challenge,
+          credTypesAndPubKeyAlgs: [["public-key", -7]],
+          excludeCredentials: user.credentials.map(credential => ({
+              type: "public-key",
+              id: Buffer.from(credential.credentialId).toString('base64')
+          })),
+          requireResidentKey: true,
+          requireUserPresence: false,
+          requireUserVerification: true,
+          rp: {
+              name: "mask_app",
+              id: "mask_app"
+          },
+          user: {
+              name: user.username,
+              displayName: user.username,
+              id: userId
+          }
+      };
+  }
+  
+
+
+  // generate challenge
+  static generateChallenge(){
+      return Buffer.from(crypto.randomBytes(32)).toString('base64');
+  }
+    
+  
 }
 
 module.exports = UserService; // Export the class, not an instance
