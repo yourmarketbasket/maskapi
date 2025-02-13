@@ -28,11 +28,13 @@ app.use((req, res, next) => {
 const authRoutes = require('./routes/authRoutes')(io);
 const userRoutes = require('./routes/userRoutes')(io);
 const messageRoutes = require('./routes/messageRoutes')(io);
+const aiRoutes = require('./routes/aiRoutes')(io);
 
 // Use routes
 app.use('/authRoutes', authRoutes);
 app.use('/userRoutes', userRoutes);
 app.use('/messageRoutes', messageRoutes);
+app.use('/aiRoutes', aiRoutes);
 
 // Home route
 app.get('/', (req, res) => {
