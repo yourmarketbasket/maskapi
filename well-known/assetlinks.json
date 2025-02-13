@@ -1,0 +1,25 @@
+  [
+    {
+      "relation" : [
+        "delegate_permission/common.handle_all_urls",
+        "delegate_permission/common.get_login_creds"
+      ],
+      "target" : {
+        "namespace" : "web",
+        "site" : "https://maskapi.fly.dev"
+      }
+    },
+    {
+      "relation" : [
+        "delegate_permission/common.handle_all_urls",
+        "delegate_permission/common.get_login_creds"
+      ],
+      "target" : {
+        "namespace" : "android_app",
+        "package_name" : "com.example.mask_app",
+        "sha256_cert_fingerprints" : [
+           "D6:FB:D0:4F:F3:2F:12:B8:BA:E5:2E:DB:72:5B:31:8A:30:E2:15:64:98:74:64:26:39:EB:B0:CA:BE:62:06:19"
+        ]
+      }
+    }
+  ]

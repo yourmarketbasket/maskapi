@@ -12,7 +12,7 @@ module.exports = (io)=>{
     });
 
 
-    router.post('/generateRegistrationChallengeRoute', async (req, res) => {
+    router.post('/generateRegistrationOptionsRoute', async (req, res) => {
         try {
               
 
@@ -23,6 +23,32 @@ module.exports = (io)=>{
             res.status(500).json({ success: false, error: error.message });
         }
     });
+
+    router.post('/verifyAttestationRoute', async (req, res) => {
+        try {
+              
+
+            const verification = await userServices.verifyWebAuthnAttestation(req.body);
+            res.json({ success: true, data: verification });
+
+        } catch (error) {
+            res.status(500).json({ success: false, error: error.message });
+        }
+    })
+
+    router.post('/saveCredentials', async (req, res) => {
+        try {
+              
+
+            const options = await userServices.saveCredentials(req.body);
+            res.json({ success: true, data: options });
+
+        } catch (error) {
+            res.status(500).json({ success: false, error: error.message });
+        }
+    });
+
+
 
 
 

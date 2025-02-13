@@ -5,11 +5,10 @@ const deviceSchema = new mongoose.Schema({
   model: { type: String, required: true }, // Device model (e.g., iPhone 12, Pixel 5)
   brand: { type: String }, // Brand (Android only)
   manufacturer: { type: String }, // Manufacturer (e.g., Samsung, Apple)
-  systemName: { type: String, required: true }, // OS name (e.g., Android, iOS)
-  systemVersion: { type: String, required: true }, // OS version (e.g., 14.4, 11)
+  systemName: { type: String }, // OS name (e.g., Android, iOS)
+  systemVersion: { type: String }, // OS version (e.g., 14.4, 11)
   identifierForVendor: { type: String }, // Unique ID for iOS (Android equivalent: serialNumber)
-  serialNo: { type: String }, // Serial number (Android only)
-  isPhysicalDevice: { type: Boolean, required: true }, // Whether it's a physical device
+  serialNo: { type: String }, // Whether it's a physical device
   display: { type: String }, // Display name/version (Android only)
   device: { type: String }, // Device identifier (Android only)
   name: { type: String }, // Device name (iOS only)
@@ -48,7 +47,7 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
   backupCodes: {
-    type: [String], // Array of backup codes for recovery
+    type: String, // Array of backup codes for recovery
     default: [],
   },
   activeDevice: deviceSchema, // Stores currently active device info

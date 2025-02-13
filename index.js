@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
     checkDBConnection(); // Ensure DB connection is checked here
 });
 
+app.use('/.well-known', express.static('well-known'));
 // Handle WebSocket connections
 io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`);
