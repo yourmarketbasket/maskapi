@@ -4,6 +4,7 @@ require('dotenv').config();
 const http = require('http');
 const { checkDBConnection, closeDBConnection } = require('./middleware/db');
 const { Server } = require('socket.io');
+const UserService = require('./services/userServices');
 const app = express();
 const PORT = 3000;
 
@@ -54,8 +55,16 @@ io.on('connection', (socket) => {
     });
 
     // Handle disconnection
-    socket.on('disconnect', () => {
-        console.log(`A user disconnected: ${socket.id}`);
+    socket.on('disconnect', async() => {
+        await UserService.markOffline(socket.id,io);
+        // console.log(`A user disconnected: ${socket.id}`);
+    });
+    // handle online status change
+    socket.on('online-status', async (data) => {
+        console.log(data)
+        // update the database
+        await UserService.markOnline(data.username, data.socketId, io);
+
     });
 });
 

@@ -7,47 +7,31 @@ const router = express.Router();
 
 module.exports = (io)=>{
     // Define your routes
-    router.post('/loginUserRoute', async(req, res) => {
-        res.send(await AuthService.loginUser(req.body.username));
+    router.post('/getUserByUsernameRoute', async(req, res) => {
+        res.send(await userServices.getUserByUsername(req.body.username));
     });
 
-
-    router.post('/generateRegistrationOptionsRoute', async (req, res) => {
-        try {
-              
-
-            const options = await userServices.generateRegistrationChallenge(req.body);
-            res.json({ success: true, data: options });
-
-        } catch (error) {
-            res.status(500).json({ success: false, error: error.message });
-        }
+    // register user
+    router.post('/registerUserRoute', async(req, res) => {
+        res.send(await userServices.registerUser(req.body));
     });
 
-    router.post('/verifyAttestationRoute', async (req, res) => {
-        try {
-              
-
-            const verification = await userServices.verifyWebAuthnAttestation(req.body);
-            res.json({ success: true, data: verification });
-
-        } catch (error) {
-            res.status(500).json({ success: false, error: error.message });
-        }
-    })
-
-    router.post('/saveCredentials', async (req, res) => {
-        try {
-              
-
-            const options = await userServices.saveCredentials(req.body);
-            res.json({ success: true, data: options });
-
-        } catch (error) {
-            res.status(500).json({ success: false, error: error.message });
-        }
+    // validate backup codes
+    router.post('/validateBackupCodesRoute', async(req, res) => {
+        res.send(await userServices.validateBackupCodes(req.body));
     });
+    // update user details with public key and device details
+    router.post('/updateUserDetailsRoute', async(req, res) => {
+        res.send(await userServices.updateUserDetails(req.body));
+    });
+    
 
+
+    
+
+    
+
+    
 
 
 

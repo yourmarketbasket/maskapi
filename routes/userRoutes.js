@@ -67,5 +67,20 @@ module.exports = (io) => {
     }
   });
 
+  // toggle online status
+  router.post('/toggleOnlineStatusRoute', async (req, res) => {
+    try {
+      const result = await UserServices.toggleOnlineStatus(req.body.username, req.body.status, io);
+      if (result.success) {
+        res.status(200).send(result);
+      } else {
+        res.status(400).send(result); // Use 400 for client-side issues like invalid requests
+      }
+    } catch (error) {
+      console.error('Error in /toggleOnlineStatus route:', error);
+      res.status(500).send({ success: false, message: 'Internal Server Error' });
+    }
+  });
+
   return router;
 };
