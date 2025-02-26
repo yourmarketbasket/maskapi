@@ -4,9 +4,9 @@ class MessageService{
 
     static async sendMessageToContact(sender, receiver, message, io) {
         try {
-            const newMessage = new Message({ sender, receiver, message });
+            const newMessage = new Message({ sender, receiver, message, timestamp: new Date() });
             await newMessage.save();
-            io.emit('new-message', { sender, receiver, message });
+            io.emit('new-message', { sender, receiver, message, timestamp:newMessage.timestamp });
             return { success: true, message: 'Message sent successfully' };
         } catch (error) {
             console.error('Error sending message:', error);

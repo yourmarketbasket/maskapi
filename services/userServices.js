@@ -214,6 +214,29 @@ class UserService {
     }
     
   }
+  // get contact online status
+  static async getContactOnlineStatus(username) {
+    try {
+      const user = await User.findOne({ username });
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found.',
+        };
+      }
+      return {
+        success: true,
+        online: user.online,
+        message: 'Contact online status retrieved successfully.',
+      };
+    } catch (err) {
+      console.error('Error getting contact online status:', err);
+      return {
+        success: false,
+        message: 'Error getting contact online status.',
+      };
+    }
+  }
 
   // validate backup codes
   static async validateBackupCodes(data) {

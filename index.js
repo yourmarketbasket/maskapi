@@ -48,6 +48,10 @@ app.use('/.well-known', express.static('well-known'));
 io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`);
 
+    socket.on('userStatus', (data) => {
+        console.log(data)
+    });
+
     // Handle custom events
     socket.on('message', (data) => {
         console.log(`Message received: ${data}`);
@@ -56,6 +60,7 @@ io.on('connection', (socket) => {
 
     // Handle disconnection
     socket.on('disconnect', async() => {
+        console.log(`A user disconnected: ${socket.id}`);
         await UserService.markOffline(socket.id,io);
         // console.log(`A user disconnected: ${socket.id}`);
     });
