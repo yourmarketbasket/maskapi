@@ -175,6 +175,7 @@ class UserService {
       user.lastSeen = new Date();
       await user.save();
       io.emit('user-online', { username: user.username, status: false });
+      console.log({ username: user.username, status: false })
       return {
         success: true,
         message: 'User marked as offline successfully.',
