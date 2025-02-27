@@ -26,7 +26,7 @@ app.use((req, res, next) => {
     next();
 });
 
-var serviceAccount = require("./firebase-service-account.json");
+var serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
