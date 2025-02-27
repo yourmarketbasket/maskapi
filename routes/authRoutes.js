@@ -24,6 +24,10 @@ module.exports = (io)=>{
     router.post('/updateUserDetailsRoute', async(req, res) => {
         res.send(await userServices.updateUserDetails(req.body));
     });
+    // update firebase token
+    router.post('/updateFirebaseNotificationTokenRoute', async(req, res)=>{
+        
+    })
     
 
 

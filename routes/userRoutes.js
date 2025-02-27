@@ -81,6 +81,22 @@ module.exports = (io) => {
       res.status(500).send({ success: false, message: 'Internal Server Error' });
     }
   });
+  // check online status of contact post request
+  router.post('/checkOnlineStatusRoute', async (req, res) => {
+    try {
+      const result = await UserServices.checkOnlineStatus(req.body.username);
+      if (result.success) {
+        res.status(200).send(result);
+      } else {
+        res.status(400).send(result); // Use 400 for client-side issues like invalid requests
+      }
+    } catch (error) {
+      console.error('Error in /checkOnlineStatus route:', error);
+      res.status(500).send({ success: false, message: 'Internal Server Error' });
+    }
+  });
+  // send firebase notification
+  
 
   return router;
 };

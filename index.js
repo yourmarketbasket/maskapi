@@ -1,3 +1,4 @@
+const admin = require('firebase-admin');
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -25,6 +26,14 @@ app.use((req, res, next) => {
     next();
 });
 
+var serviceAccount = require("./firebase-service-account.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+
+
 // Import routes and pass `io` directly
 const authRoutes = require('./routes/authRoutes')(io);
 const userRoutes = require('./routes/userRoutes')(io);
@@ -44,6 +53,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/.well-known', express.static('well-known'));
+
 // Handle WebSocket connections
 io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`);
@@ -61,15 +71,14 @@ io.on('connection', (socket) => {
     // Handle disconnection
     socket.on('disconnect', async() => {
         console.log(`A user disconnected: ${socket.id}`);
-        await UserService.markOffline(socket.id,io);
-        // console.log(`A user disconnected: ${socket.id}`);
+        await UserService.markOffline(socket.id, io);
     });
+
     // handle online status change
     socket.on('online-status', async (data) => {
         console.log(data)
         // update the database
         await UserService.markOnline(data.username, data.socketId, io);
-
     });
 });
 

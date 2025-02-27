@@ -1,5 +1,6 @@
 const express = require('express');
 const MessageService = require('../services/messageService');
+const UserService = require('../services/userServices');
 const router = express.Router();
 
 
@@ -17,6 +18,11 @@ module.exports = (io)=>{
     router.post('/getChatMatesRoute', async(req, res) => {
         res.send(await MessageService.getChatMates(req.body.username));
     });
+    // send firebase notification route
+    router.post('/sendFirebaseNotificationRoute', async(req, res)=>{
+        res.send(await UserService.sendFirebaseNotification(req.body))
+    })
+
     
 
     

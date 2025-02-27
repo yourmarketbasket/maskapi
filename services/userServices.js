@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const admin = require('firebase-admin');
 
 class UserService {
   // Check if the username already exists in the database
@@ -160,6 +161,29 @@ class UserService {
       };
     }
   }
+  // check online status of contact
+  static async checkOnlineStatus(username) {
+    try {
+      const user = await User.findOne({ username });
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found.',
+        };
+      }
+      return {
+        success: true,
+        message: 'User found.',
+        online: user.online,
+      };
+    } catch (err) {
+      console.error('Error checking user online status:', err);
+      return {
+        success: false,
+        message: 'Error checking user online status.',
+      };
+    }
+  }
   // mark user as offline based on socketid
   static async markOffline(socketId, io) {
     try {
@@ -274,6 +298,27 @@ class UserService {
         message: 'Error validating backup codes.',
       };
     }
+  }
+
+  // send firebase notification
+  static async sendFirebaseNotification(data) {
+    const message = {
+      notification: {
+        title: data.title,
+        body: data.body,
+      },
+      token: data.token,
+    };
+
+    try {
+      const response = await admin.messaging().send(message);
+      console.log('Successfully sent message:', response);
+      return { success: true, message: 'Notification sent successfully', response };
+    } catch (error) {
+      console.error('Error sending message:', error);
+      return { success: false, error: error.message };
+    }
+    
   }
   
 
