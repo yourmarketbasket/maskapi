@@ -320,6 +320,31 @@ class UserService {
     }
     
   }
+
+  // update firebase notification token
+  static async updateFirebaseNotificationToken(data) {
+    try {
+      const user = await User.findOne({ username: data.username });
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found.',
+        };
+      }
+      user.notificationToken = data.token;
+      await user.save();
+      return {
+        success: true,
+        message: 'Firebase notification token updated successfully.',
+      };
+    } catch (err) {
+      console.error('Error updating firebase notification token:', err);
+      return {
+        success: false,
+        message: 'Error updating firebase notification token.',
+      };
+    }
+  }
   
 
   // Get all users

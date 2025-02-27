@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  notificationToken: {
+    type: String
+
+  },
   online: {
     type: Boolean,
     default: false
